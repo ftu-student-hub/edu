@@ -2999,11 +2999,7 @@ header::before {
     border-color var(--dur-fast) var(--ease-smooth),
     transform var(--dur-fast) var(--ease-spring);
 }
-.grad-section:nth-child(1) .grad-item:nth-child(1) { animation-delay: 0.04s; }
-.grad-section:nth-child(1) .grad-item:nth-child(2) { animation-delay: 0.09s; }
-.grad-section:nth-child(1) .grad-item:nth-child(3) { animation-delay: 0.14s; }
-.grad-section:nth-child(2) .grad-item:nth-child(1) { animation-delay: 0.19s; }
-.grad-section:nth-child(2) .grad-item:nth-child(2) { animation-delay: 0.24s; }
+/* grad-item delays set dynamically in renderGradChecklist() */
 .grad-item:hover { transform: translateX(5px); }
 .grad-check-box {
   transition: all var(--dur-base) var(--ease-bounce);
@@ -3821,7 +3817,27 @@ body { background-image: radial-gradient(ellipse 80% 40% at 100% 0%,rgba(37,99,2
     line-height: 1.6 !important;
   }
 
-  .hero-greeting { font-size: 12px; margin-bottom: 6px; }
+  .hero-greeting {
+    font-size: 11.5px !important;
+    margin-bottom: 6px;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+  }
+  .hero-greeting span {
+    white-space: nowrap !important;
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  #hero-date {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
 
   .hero-actions {
     gap: 8px !important;
@@ -4553,6 +4569,27 @@ body { background-image: radial-gradient(ellipse 80% 40% at 100% 0%,rgba(37,99,2
   .metric-num  { white-space: nowrap !important; }
   .metric-label { font-size: 11px !important; }
   .pm-num      { white-space: nowrap !important; }
+
+  /* ── 21. pm-sub (GPA delta, deadline warn) — 1 dòng nhất quán ── */
+  .pm-sub {
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 10px !important;
+    max-width: 100% !important;
+    gap: 3px !important;
+  }
+  .pm-sub span {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 0 !important;
+  }
+  .pm-label {
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
 
   /* ── 20. Tên môn học trong tracker không bị cắt ── */
   .subj-name { overflow: hidden; text-overflow: ellipsis; }
@@ -7631,6 +7668,11 @@ function renderGradChecklist() {
           <span class="grad-item-tag ev-tag ${item.tagClass}">${item.tag}</span>
         </div>`).join('')}
     </div>`).join('');
+  // Gán animation-delay đồng nhất cho từng thẻ theo thứ tự
+  container.querySelectorAll('.grad-item').forEach((el, idx) => {
+    el.style.animationDelay = (idx * 0.055) + 's';
+  });
+
   GRAD_ITEMS.forEach(s => { totalItems += s.items.length; s.items.forEach(i => { if(i.checked) checkedItems++; }); });
   const pct = totalItems ? Math.round(checkedItems/totalItems*100) : 0;
   const circ = 314.1;
